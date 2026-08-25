@@ -1,4 +1,4 @@
--- Carlo Hub - Ultimate Edition (Optimized, Fixed Outer Ring Drag & Click)
+-- Carlo Hub - Ultimate Edition (Optimized, Fixed Farm Copy Script)
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -176,10 +176,10 @@ macStroke.Thickness = 1.2
 macStroke.Parent = purpleCloseBtn
 
 -- --- OUTER WHITE RING & MOBILE BUTTON ---
-local outerRing = Instance.new("TextButton") -- Als TextButton damit es klickbar ist
+local outerRing = Instance.new("TextButton")
 outerRing.Size = UDim2.new(0, 66, 0, 66)
 outerRing.Position = UDim2.new(0, 20, 0.5, -33)
-outerRing.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Weißer Rand
+outerRing.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 outerRing.BorderSizePixel = 0
 outerRing.Text = ""
 outerRing.Visible = false
@@ -190,7 +190,7 @@ local outerRingCorner = Instance.new("UICorner")
 outerRingCorner.CornerRadius = UDim.new(1, 0)
 outerRingCorner.Parent = outerRing
 
-local mobileBtn = Instance.new("TextLabel") -- Als TextLabel, da der outerRing die Klicks übernimmt
+local mobileBtn = Instance.new("TextLabel")
 mobileBtn.Size = UDim2.new(0, 60, 0, 60)
 mobileBtn.Position = UDim2.new(0, 3, 0, 3)
 mobileBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
@@ -319,24 +319,36 @@ local copyCorner = Instance.new("UICorner")
 copyCorner.CornerRadius = UDim.new(0, 6)
 copyCorner.Parent = copyScriptBtn
 
+-- Hier wurde der korrekte Farm-Code eingetragen, damit COPY genau dasselbe tut:
 copyScriptBtn.MouseButton1Click:Connect(function()
 	if setclipboard then
 		local fullAutoFarmCode = [[
-if not game:IsLoaded() then game.Loaded:Wait() end
-task.wait(5)
-local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
-local hum = char:WaitForChild("Humanoid")
-hrp.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578)
-task.wait(1)
-pcall(function()
-	hrp.CFrame = workspace.Map.Buildings.CustomsFinal.CustomsBuilding.FinalDoor.Command.Console.CFrame
+task.spawn(function()
+	local player = game.Players.LocalPlayer
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+	local humanoid = character:WaitForChild("Humanoid")
+
+	humanoidRootPart.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+	task.wait(1)
+
+	local success, errorMessage = pcall(function()
+		local map = workspace:WaitForChild("Map", 10) 
+		local console = map.Buildings.CustomsFinal.CustomsBuilding.FinalDoor.Command.Console
+		humanoidRootPart.CFrame = console.CFrame
+	end)
+
+	if not success then
+		return
+	end
+
+	task.wait(1) 
+	humanoid.Health = 0 
+	
+	task.wait(10)
+
+	game:GetService("ReplicatedStorage").FlowClient.ClientRunner.Event:FireServer("GameManager", "Replay")
 end)
-task.wait(1)
-hum.Health = 0
-task.wait(10)
-game:GetService("ReplicatedStorage").FlowClient.ClientRunner.Event:FireServer("GameManager", "Replay")
 		]]
 		setclipboard(fullAutoFarmCode)
 	end
