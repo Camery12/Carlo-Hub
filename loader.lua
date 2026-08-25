@@ -1,4 +1,4 @@
--- Carlo Hub - Ultimate Edition (With 5s Load Delay & Copy Fix)
+-- Carlo Hub - Ultimate Edition (With Double Reset)
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -11,7 +11,7 @@ if playerGui:FindFirstChild("CarloHub") then
 	playerGui.CarloHub:Destroy()
 end
 
--- --- DEFINITION DES FARM-SKRIPTS (Inklusive 5 Sek. Lade-Sicherung) ---
+-- --- DEFINITION DES FARM-SKRIPTS (Inklusive doppeltem Reset) ---
 local farmScriptCode = [[
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(5)
@@ -35,7 +35,15 @@ if not success then
 end
 
 task.wait(1) 
-humanoid.Health = 0 
+humanoid.Health = 0 -- 1. Reset
+
+-- --- 2. CHECK: 1 Sekunde warten und erzwingt einen erneuten Reset ---
+task.wait(1)
+
+-- Charakter und Humanoid neu holen, falls sich der Charakter in der Sekunde aktualisiert hat
+local newChar = player.Character or player.CharacterAdded:Wait()
+local newHumanoid = newChar:WaitForChild("Humanoid")
+newHumanoid.Health = 0 -- 2. Reset (Egal was passiert)
 
 task.wait(10)
 
