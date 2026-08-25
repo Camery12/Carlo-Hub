@@ -1,4 +1,4 @@
--- Carlo Hub - Ultimate Edition (Mit 3 Checks nacheinander)
+-- Carlo Hub - Ultimate Edition (Mit 5 Sek. Wartezeit vor Konsolen-TP)
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -11,7 +11,7 @@ if playerGui:FindFirstChild("CarloHub") then
 	playerGui.CarloHub:Destroy()
 end
 
--- --- DEFINITION DES FARM-SKRIPTS (Mit 1., 2. und 3. Check) ---
+-- --- DEFINITION DES FARM-SKRIPTS (Mit 5 Sek. Wartezeit vor Konsolen-TP & 3 Checks) ---
 local farmScriptCode = [[
 if not game:IsLoaded() then game.Loaded:Wait() end
 task.wait(5)
@@ -21,8 +21,11 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local humanoid = character:WaitForChild("Humanoid")
 
+-- 1. Teleport (Start-Position)
 humanoidRootPart.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-task.wait(1)
+
+-- NEU: 5 Sekunden warten, bevor der Konsolen-Teleport passiert
+task.wait(5)
 
 local success, errorMessage = pcall(function()
 	local map = workspace:WaitForChild("Map", 10) 
