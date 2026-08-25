@@ -1,4 +1,4 @@
--- Carlo Hub - Ultimate Edition (100% Identical Farm Script & Copy Fix)
+-- Carlo Hub - Ultimate Edition (With 5s Load Delay & Copy Fix)
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -11,8 +11,11 @@ if playerGui:FindFirstChild("CarloHub") then
 	playerGui.CarloHub:Destroy()
 end
 
--- --- DEFINITION DES FARM-SKRIPTS (Wird für Ausführung UND Copy verwendet) ---
+-- --- DEFINITION DES FARM-SKRIPTS (Inklusive 5 Sek. Lade-Sicherung) ---
 local farmScriptCode = [[
+if not game:IsLoaded() then game.Loaded:Wait() end
+task.wait(5)
+
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
