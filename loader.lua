@@ -1,4 +1,4 @@
--- Carlo Hub - Ultimate Edition (Optimized, Fixed Farm Copy Script)
+-- Carlo Hub - Ultimate Edition (100% Identical Farm Script & Copy Fix)
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -10,6 +10,34 @@ local playerGui = player:FindFirstChild("PlayerGui") or CoreGui
 if playerGui:FindFirstChild("CarloHub") then
 	playerGui.CarloHub:Destroy()
 end
+
+-- --- DEFINITION DES FARM-SKRIPTS (Wird für Ausführung UND Copy verwendet) ---
+local farmScriptCode = [[
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
+
+humanoidRootPart.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+task.wait(1)
+
+local success, errorMessage = pcall(function()
+	local map = workspace:WaitForChild("Map", 10) 
+	local console = map.Buildings.CustomsFinal.CustomsBuilding.FinalDoor.Command.Console
+	humanoidRootPart.CFrame = console.CFrame
+end)
+
+if not success then
+	return
+end
+
+task.wait(1) 
+humanoid.Health = 0 
+
+task.wait(10)
+
+game:GetService("ReplicatedStorage").FlowClient.ClientRunner.Event:FireServer("GameManager", "Replay")
+]]
 
 -- Main GUI
 local screenGui = Instance.new("ScreenGui")
@@ -319,39 +347,23 @@ local copyCorner = Instance.new("UICorner")
 copyCorner.CornerRadius = UDim.new(0, 6)
 copyCorner.Parent = copyScriptBtn
 
--- Hier wurde der korrekte Farm-Code eingetragen, damit COPY genau dasselbe tut:
+-- Copy-Button kopiert exakt den gleichen String
 copyScriptBtn.MouseButton1Click:Connect(function()
 	if setclipboard then
-		local fullAutoFarmCode = [[
-task.spawn(function()
-	local player = game.Players.LocalPlayer
-	local character = player.Character or player.CharacterAdded:Wait()
-	local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-	local humanoid = character:WaitForChild("Humanoid")
-
-	humanoidRootPart.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-	task.wait(1)
-
-	local success, errorMessage = pcall(function()
-		local map = workspace:WaitForChild("Map", 10) 
-		local console = map.Buildings.CustomsFinal.CustomsBuilding.FinalDoor.Command.Console
-		humanoidRootPart.CFrame = console.CFrame
-	end)
-
-	if not success then
-		return
+		setclipboard(farmScriptCode)
 	end
-
-	task.wait(1) 
-	humanoid.Health = 0 
-	
-	task.wait(10)
-
-	game:GetService("ReplicatedStorage").FlowClient.ClientRunner.Event:FireServer("GameManager", "Replay")
 end)
-		]]
-		setclipboard(fullAutoFarmCode)
-	end
+
+-- Farm-Execution führt exakt den gleichen String aus
+farmButton.MouseButton1Click:Connect(function()
+	task.spawn(function()
+		local execFunc, err = loadstring(farmScriptCode)
+		if execFunc then
+			execFunc()
+		else
+			warn("Fehler beim Ausführen des Farm-Skripts:", err)
+		end
+	end)
 end)
 
 -- --- TAB 2: Functions ---
@@ -472,35 +484,6 @@ tab2Btn.MouseButton1Click:Connect(function() switchTab(2) end)
 tab3Btn.MouseButton1Click:Connect(function() switchTab(3) end)
 
 tab1Btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-
--- Farm Execution Loop
-farmButton.MouseButton1Click:Connect(function()
-	task.spawn(function()
-		local character = player.Character or player.CharacterAdded:Wait()
-		local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-		local humanoid = character:WaitForChild("Humanoid")
-
-		humanoidRootPart.CFrame = CFrame.new(1809.27673, 1947.51843, 83626.2578, 1, 0, 0, 0, 1, 0, 0, 0, 1)
-		task.wait(1)
-
-		local success, errorMessage = pcall(function()
-			local map = workspace:WaitForChild("Map", 10) 
-			local console = map.Buildings.CustomsFinal.CustomsBuilding.FinalDoor.Command.Console
-			humanoidRootPart.CFrame = console.CFrame
-		end)
-
-		if not success then
-			return
-		end
-
-		task.wait(1) 
-		humanoid.Health = 0 
-		
-		task.wait(10)
-
-		game:GetService("ReplicatedStorage").FlowClient.ClientRunner.Event:FireServer("GameManager", "Replay")
-	end)
-end)
 
 -- Info & Toggle Animation Handler
 local infoText = Instance.new("TextLabel")
